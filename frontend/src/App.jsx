@@ -10,6 +10,8 @@ import {
   Welcome,
 } from "./pages";
 import { Layout } from "./components";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer autoClose={2000} />
     </>
   );
 }

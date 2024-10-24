@@ -2,12 +2,16 @@ import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { LeftSidebar, Header, Rightbar } from "./index";
 import styled from "styled-components";
 import CreatePostModal from "./CreatePostModal";
+import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Layout = () => {
-  const user = { token: "Ash" };
   const location = useLocation();
+  const { token, isLoading } = useSelector((state) => state.auth);
 
-  return user?.token ? (
+  if (isLoading) return <LoadingSpinner />;
+
+  return token ? (
     <BodyContainer>
       <Header />
       <MainContainer className="container-fluid">

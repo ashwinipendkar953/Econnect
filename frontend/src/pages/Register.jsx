@@ -1,8 +1,63 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { GrFormNextLink } from "react-icons/gr";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { authResetState, register } from "../features/auth/authSlice";
+import { toast } from "react-toastify";
+
+const INITIAL_FORM_DATA = {
+  fullName: "",
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Register = () => {
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const dispatch = useDispatch();
+  const { isSuccess, isError, message } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(message, {
+        toastId: "success",
+      });
+      navigate("/login");
+      setFormData(INITIAL_FORM_DATA);
+    } else if (isError) {
+      toast.error(message, {
+        toastId: "error",
+      });
+    }
+    dispatch(authResetState());
+  }, [isSuccess, isError, message, dispatch]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(register(formData));
+  };
+
+  const handleTogglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleToggleConfirmPassword = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
   return (
     <div className="container w-100 my-3 d-flex flex-column justify-content-center align-items-center">
       <h1 className="text-primary">Econnect</h1>
@@ -12,7 +67,7 @@ const Register = () => {
       >
         <div className="card-body">
           <h2 className="text-center fw-bold">Signup</h2>
-          <form className="px-md-5 px-sm-3 py-3">
+          <form className="px-md-5 px-sm-3 py-3" onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="fullName" className="form-label">
                 Full Name
@@ -23,19 +78,24 @@ const Register = () => {
                 name="fullName"
                 className="form-control py-2"
                 placeholder="John Doe"
+                value={formData.fullName}
+                onChange={handleChange}
                 required
               />
             </div>
+
             <div className="mb-3">
-              <label htmlFor="userName" className="form-label">
+              <label htmlFor="username" className="form-label">
                 Username
               </label>
               <input
                 type="text"
-                id="userName"
-                name="userName"
+                id="username"
+                name="username"
                 className="form-control py-2"
                 placeholder="johndoe"
+                value={formData.username}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -50,6 +110,8 @@ const Register = () => {
                 name="email"
                 className="form-control py-2"
                 placeholder="john@gmail.com"
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -58,28 +120,52 @@ const Register = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="form-control py-2"
-                placeholder="***********"
-                required
-              />
+              <div className="d-flex position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  className="form-control py-2"
+                  placeholder="***********"
+                  autoComplete="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="btn position-absolute end-0"
+                  onClick={handleTogglePassword}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
 
             <div className="mb-3">
               <label htmlFor="confirmPassword" className="form-label">
                 Confirm Password
               </label>
-              <input
-                type="confirmPassword"
-                id="confirmPassword"
-                name="confirmPassword"
-                className="form-control py-2"
-                placeholder="***********"
-                required
-              />
+              <div className="d-flex position-relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="form-control py-2"
+                  placeholder="***********"
+                  autoComplete="confirm-password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="btn position-absolute end-0"
+                  onClick={handleToggleConfirmPassword}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
 
             <div className="mb-3 form-check">

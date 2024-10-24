@@ -1,12 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa";
 import { MdRssFeed } from "react-icons/md";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../features/auth/authSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <HeaderContainer className="position-fixed top-0 w-100 shadow-sm bg-white">
       <nav className="navbar navbar-expand-lg bg-white">
@@ -54,15 +63,16 @@ const Header = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {/* {user?.profilePic ? (
-              <img
-                className="img-fluid rounded-circle user-profile"
-                src={user?.profilePic}
-                alt={user?.name}
-                style={{ width: "40px", height: "40px" }}
-              />
-            ) : ( */}
-                <FaCircleUser size={30} className="customIcon" /> {/* )} */}
+                {user?.profilePic ? (
+                  <img
+                    className="img-fluid rounded-circle user-profile"
+                    src={user?.profilePic}
+                    alt={user?.name}
+                    style={{ width: "40px", height: "40px" }}
+                  />
+                ) : (
+                  <FaCircleUser size={30} className="customIcon" />
+                )}
               </Link>
               <DropdownMenu className="dropdown-menu">
                 <li className="border-bottom">
@@ -84,12 +94,8 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <DropdownItem
-                    type="button"
-                    to="./logout"
-                    // onClick={handleLogout}
-                  >
-                    <div className="me-1 ">
+                  <DropdownItem type="button" onClick={handleLogout}>
+                    <div className="me-1">
                       <RiLogoutCircleRFill className="customIcon" />
                     </div>
                     <p className=" mb-0">Logout</p>
@@ -210,7 +216,7 @@ const DropdownMenu = styled.ul`
   min-width: 200px;
   background-color: white;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
 
   @media (max-width: 991.98px) {
     display: none;

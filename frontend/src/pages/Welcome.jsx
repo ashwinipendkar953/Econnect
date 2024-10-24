@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import hero1 from "../assets/hero1.svg";
 
 const Welcome = () => {
   return (
@@ -31,7 +32,7 @@ const Welcome = () => {
           </div>
         </div>
         <div className="col-md-6 d-none d-md-block overflow-hidden">
-          <img src="/assets/hero1.svg" alt="Hero" style={{ height: "500px" }} />
+          <img src={hero1} alt="Hero" style={{ height: "500px" }} />
         </div>
       </div>
     </div>
